@@ -5,6 +5,7 @@ Coder: Jay Liao, jl64465
 This directory contains the code for the paper [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640).
 
 I used and worked from 2 open-source PyTorch implementation of YOLO:
+    
     * [pytorch-yolo-v1](https://github.com/zzzheng/pytorch-yolo-v1)
     * [YOLOv1-Pytorch](https://github.com/GitHberChen/YOLOv1-Pytorch)
 
