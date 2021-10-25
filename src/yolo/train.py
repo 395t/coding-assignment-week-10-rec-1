@@ -107,7 +107,7 @@ def train(args):
     # Save dir
     save_dir = os.path.join(args.save_dir, args.name)
     log_dir = os.path.join(args.log_dir, args.name)
-    img_dir = os.path.join(args.save_dir, 'img')
+    img_dir = os.path.join(save_dir, 'img')
     os.makedirs(img_dir, exist_ok=True)
     print(f"Saving to {save_dir}")
     print(f"Logging to {log_dir}")
