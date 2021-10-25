@@ -1,0 +1,147 @@
+import torch
+from torch.utils.data import DataLoader
+import torch.nn as nn
+import torch.nn.functional as F
+from torchvision import models
+from torchsummary import summary
+import torchvision
+import torch.optim as optim
+from torch.autograd import Variable
+from time import time
+import torchvision.transforms as T
+import torch.utils.data
+from natsort import natsorted
+import os
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline 
+import matplotlib.patches as mpatches
+from matplotlib import patches
+import time
+from tqdm.notebook import tqdm
+
+if torch.cuda.is_available():
+    print("The code will run on GPU.")
+else:
+    print("The code will run on CPU. Go to Edit->Notebook Settings and choose GPU as the hardware accelerator")
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+dataset_train = torchvision.datasets.VOCDetection('root', year = '2007', image_set = 'train', download= True, transform=torchvision.transforms.ToTensor())
+
+def get_bndbox(target):
+  bndbox = []
+  for i in range(len(target.get('annotation').get('object'))):
+    haha = [0,0,0,0]
+    for k,v in target.get('annotation').get('object')[i].get('bndbox').items():
+      if k == 'ymin':
+        if int(v) > 333:
+          v = 332
+        haha[1] = int(v)
+
+      if k == 'ymax':
+        if int(v) > 333:
+          v = 333
+        haha[3] = int(v)
+
+      if k == 'xmin':
+        if int(v) > 500:
+          v = 499
+        haha[0] = int(v)
+
+      if k == 'xmax':
+        if int(v) > 500:
+          v = 500
+        haha[2] = int(v)
+      
+      
+      
+
+    bndbox.append(haha)
+
+
+  return torch.Tensor(bndbox)
+
+def get_label(target):
+  n = len(target.get('annotation').get('object'))
+  return torch.ones(n)
+  
+def get_dict(target):
+  t = {}
+  t['boxes'] = get_bndbox(target).type(torch.FloatTensor)
+  t['labels'] = get_label(target).type(torch.long)
+  t['masks'] = torch.zeros(3, 442, 500).type(torch.uint8)
+  
+  return t
+  
+data_loader_train = torch.utils.data.DataLoader(dataset_train, batch_size=2, shuffle=True, collate_fn=lambda x:list(zip(*x)))
+print(len(data_loader_train))
+
+import torchvision
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
+
+
+num_classes = 2
+model = torchvision.models.detection.maskrcnn_resnet50_fpn()
+
+in_features = model.roi_heads.box_predictor.cls_score.in_features
+# replace the pre-trained head with a new one
+model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+
+# now get the number of input features for the mask classifier
+in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
+hidden_layer = 256
+# and replace the mask predictor with a new one
+model.roi_heads.mask_predictor = MaskRCNNPredictor(in_features_mask,
+                                                    hidden_layer,
+                                                    num_classes)
+
+
+
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+model=model.to(device)
+
+params = [p for p in model.parameters() if p.requires_grad]
+optimizer = torch.optim.SGD(params, lr=0.001, momentum=0.9, weight_decay=0.0005)
+
+loss_list = []
+n_epochs = 2
+model.train()
+for epoch in tqdm(range(n_epochs)):
+    loss_epoch = []
+    iteration=1
+    for images,targets in tqdm(data_loader_train):
+        img_list = []
+
+
+        
+        images = list(image.type(torch.DoubleTensor).to(device) for image in images)
+        targets = [{k: v.to(device) for k, v in get_dict(t).items()} for t in targets]
+
+        
+
+        optimizer.zero_grad()
+        model=model.double()
+        loss_dict = model(images, targets)
+        losses = sum(loss for loss in loss_dict.values())
+        losses.backward()       
+        optimizer.step()
+        loss_epoch.append(losses.item())
+        plt.plot(list(range(iteration)), loss_epoch)
+        plt.xlabel("Iteration")
+        plt.ylabel("Loss")
+        plt.show()
+
+        iteration+=1
+        if iteration > 10:
+          break
+    loss_epoch_mean = np.mean(loss_epoch) 
+    loss_list.append(loss_epoch_mean)    
+    print("Average loss for epoch = {:.4f} ".format(loss_epoch_mean))
+    
+plt.plot(list(range(n_epochs)), loss_list, label='traning loss')
+plt.legend()
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.show()
