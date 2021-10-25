@@ -1,0 +1,50 @@
+import torch
+from torch.utils.data import DataLoader
+import torch.nn as nn
+import torch.nn.functional as F
+from torchvision import models
+from torchsummary import summary
+import torchvision
+import torch.optim as optim
+from torch.autograd import Variable
+from time import time
+import torchvision.transforms as T
+import torch.utils.data
+from natsort import natsorted
+import os
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline 
+import matplotlib.patches as mpatches
+from matplotlib import patches
+import time
+from tqdm.notebook import tqdm
+
+from google.colab import files
+uploaded = files.upload()
+
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+img = cv2.imread("WIN_20211023_23_02_32_Pro.jpg")
+img_cvt=cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+plt.imshow(img_cvt)
+plt.show()
+
+img_tensor = torch.Tensor(img_cvt)
+img_tensor.size()
+
+transfer_img =  torch.randn((3, 300, 500))
+
+for i in range(300):
+  for j in range(500):
+    transfer_img[:, i, j] = img_tensor[i, j, :]
+
+model = torchvision.models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
+model.eval()
+x = [torch.rand(3, 300, 400)]
+predictions = model(x)
+
+print(predictions)
