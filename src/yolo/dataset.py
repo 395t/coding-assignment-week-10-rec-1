@@ -32,12 +32,6 @@ VOC_CLASSES = (  # always index 0
 )
 
 
-voc2007_normalize = transforms.Normalize((0.39092347, 0.42301013, 0.4474045),
-                                         (0.28450244, 0.27197774, 0.27521163))
-voc2012_normalize = transforms.Normalize((0.40530911, 0.43773604, 0.45677271),
-                                         (0.28526465, 0.27186762, 0.27457791))
-
-
 class VOCAnnotationTransform(object):
     # 将VOC的标注转换为 (x,y,w,h,class), class为上面VOC_CLASSES的序号
     """Transforms a VOC annotation into a Tensor of bbox coords and label index
@@ -183,16 +177,13 @@ class VOCDetection(data.Dataset):
             # boxes=[xmin, ymin, xmax, ymax]\in[0,1],
             # abels=类名对应的序号,i.e.[idx]
             img, boxes, labels = self.transform(img, target[:, :4], target[:, 4])
-            # to rgb：[h,w,c], 其中c 为 BGR
-            # i.e. img = img.transpose(2, 0, 1)
-            img = img[:, :, (2, 1, 0)]
 
             # hstack,在最低的维度进行连接，这不还原成了上面的target？
             # [[xmin, ymin, xmax, ymax, label_idx], ... ]
             target = np.hstack((boxes, np.expand_dims(labels, axis=1)))
+
         # tensor[c,h,w], np.array[[xmin, ymin, xmax, ymax, label_ind], ... ]
-        return torch.from_numpy(img).permute(2, 0, 1), target, height, width
-        # return torch.from_numpy(img), target, height, width
+        return img, target, height, width
 
     # 返回原始的PIL图片
     def pull_image(self, index):

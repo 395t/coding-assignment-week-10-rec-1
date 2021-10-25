@@ -15,5 +15,5 @@ I used and worked from 2 open-source PyTorch implementation of YOLO:
 * Scikit-Image 0.17.2
 * Notebook 6.4.4
 * Matplotlib 3.3.4
-* TorchsummaryX 1.3.0
+* torchinfo 1.5.3
 * tqdm 4.62.3

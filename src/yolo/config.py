@@ -6,7 +6,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-CHANNEL_MEANS = (104, 117, 123)
 # IMAGE_MIN_SIDE: float = 600.0
 # IMAGE_MAX_SIDE: float = 1000.0
 
