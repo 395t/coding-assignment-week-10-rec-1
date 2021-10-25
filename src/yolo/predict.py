@@ -249,7 +249,7 @@ def predict(img_tensor, model):
         return boxes, tags, scores
 
 
-def calc_map(dataset, model, valid_transform, iou_threshold=0.5):
+def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
     """
     Idea from https://github.com/Cartucho/mAP/blob/master/main.py
     """
@@ -340,8 +340,13 @@ def calc_map(dataset, model, valid_transform, iou_threshold=0.5):
             'GT': 0 if key not in gt_counter else gt_counter[key],
         }
 
+    # Fill missing values
+    for key in range(len(classes)):
+        if key not in ap_dict:
+            ap_dict[key] = {'AP': 0.0, 'TP': 0, 'FP': 0, 'GT': 0}
+
     # Calculate mean AP
-    aps = [ap_dict[key]['AP'] for key in ap_dict.keys()]
+    aps = [ap_dict[key]['AP'] for key in range(len(classes))]
     mean_ap = sum(aps) / len(aps)
 
     return mean_ap, ap_dict

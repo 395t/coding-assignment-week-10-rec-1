@@ -74,6 +74,7 @@ def train(args):
         val_set = [('2007', 'val')]
         train_transform = Yolov1Augmentation(dataset=args.dataset, size=448, percent_coord=True)
         valid_transform = Yolov1TestAugmentation(dataset=args.dataset, size=448, percent_coord=True)
+        classes = VOC_CLASSES
     else:
         raise NotImplementedError(f'{args.dataset} dataset not implemented')
 
@@ -170,8 +171,8 @@ def train(args):
 
         avg_train_loss = sum(train_losses) / len(train_data)
         avg_valid_loss = sum(valid_losses) / len(valid_data)
-        train_mean_ap, _ = calc_map(train_data, model, valid_transform)
-        valid_mean_ap, _ = calc_map(valid_data, model, valid_transform)
+        train_mean_ap, _ = calc_map(train_data, classes, model, valid_transform)
+        valid_mean_ap, _ = calc_map(valid_data, classes, model, valid_transform)
 
         train_loss_summary.append(avg_train_loss)
         valid_loss_summary.append(avg_valid_loss)
