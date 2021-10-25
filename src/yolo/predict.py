@@ -250,9 +250,7 @@ def predict(img_tensor, model):
 
 
 def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
-    """
-    Idea from https://github.com/Cartucho/mAP/blob/master/main.py
-    """
+    # Idea from https://github.com/Cartucho/mAP/blob/master/main.py
     gt_counter, p_counter = {}, {}
     for idx in tqdm(range(len(dataset))):
         img = dataset.pull_image(idx)
@@ -272,6 +270,14 @@ def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
 
         # Predictions
         boxes, tags, scores = predict(img_tensor, model)
+        h, w, _ = img.shape
+        if len(boxes) > 0:
+            boxes = np.array([
+                boxes[:, 0] * w,
+                boxes[:, 1] * h,
+                boxes[:, 2] * w,
+                boxes[:, 3] * h,
+            ]).T
         tags = [t[0] for t in tags]
         preds = list(zip(scores, tags, boxes))
         preds = sorted(preds, key=lambda x: x[0], reverse=True)
@@ -290,7 +296,7 @@ def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
                     ih = bi[3] - bi[1] + 1
                     if iw > 0 and ih > 0:
                         union = (bb[2] - bb[0] + 1) * (bb[3] - bb[1] + 1) + (box[2] - box[0] + 1) \
-                                * (box[3] - box[1] + 1) + iw * ih
+                                * (box[3] - box[1] + 1) - iw * ih
                         iou = iw * ih / union
                         if iou > best_iou:
                             best_iou = iou
@@ -331,8 +337,11 @@ def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
         rec_counter[key].append(1.0)
 
         ap = 0.0
+        best_prec = 0.0
         for i in range(len(prec_counter[key])-1, 0, -1):
-            ap += max(prec_counter[key][i], prec_counter[key][i-1]) * (rec_counter[key][i] - rec_counter[key][i-1])
+            if prec_counter[key][i] > best_prec:
+                best_prec = prec_counter[key][i]
+            ap += best_prec * (rec_counter[key][i] - rec_counter[key][i-1])
         ap_dict[key] = {
             'AP': ap,
             'TP': tp,
@@ -343,13 +352,146 @@ def calc_map(dataset, classes, model, valid_transform, iou_threshold=0.5):
     # Fill missing values
     for key in range(len(classes)):
         if key not in ap_dict:
-            ap_dict[key] = {'AP': 0.0, 'TP': 0, 'FP': 0, 'GT': 0}
+            ap_dict[key] = {'AP': 0.0, 'TP': 0, 'FP': 0, 'GT': 0 if key not in gt_counter else gt_counter[key]}
 
     # Calculate mean AP
     aps = [ap_dict[key]['AP'] for key in range(len(classes))]
     mean_ap = sum(aps) / len(aps)
 
     return mean_ap, ap_dict
+
+
+"""
+Below are from https://github.com/abeardear/pytorch-YOLO-v1/blob/master/eval_voc.py
+"""
+def voc_ap(rec, prec, use_07_metric=False):
+    if use_07_metric:
+        # 11 point metric
+        ap = 0.
+        for t in np.arange(0.,1.1,0.1):
+            if np.sum(rec >= t) == 0:
+                p = 0
+            else:
+                p = np.max(prec[rec>=t])
+            ap = ap + p/11.
+    else:
+        # correct ap caculation
+        mrec = np.concatenate(([0.],rec,[1.]))
+        mpre = np.concatenate(([0.],prec,[0.]))
+
+        for i in range(mpre.size -1, 0, -1):
+            mpre[i-1] = np.maximum(mpre[i-1],mpre[i])
+
+        i = np.where(mrec[1:] != mrec[:-1])[0]
+
+        ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])
+    return ap
+
+
+def voc_eval(dataset, model, transform, classes=VOC_CLASSES, threshold=0.5, use_07_metric=False):
+    '''
+    preds {'cat':[[image_id,confidence,x1,y1,x2,y2],...],'dog':[[],...]}
+    target {(image_id,class):[[],]}
+    '''
+    preds, target = {}, {}
+    for c in classes:
+        preds[c] = []
+    for idx in tqdm(range(len(dataset))):
+        img = dataset.pull_image(idx)
+        img_id, gt = dataset.pull_anno(idx)
+        gt = np.array(gt)
+        img_tensor, _, _ = transform(img, gt[:, :4], gt[:, 4])
+        img_tensor = img_tensor.unsqueeze(0)
+
+        for bb in gt:
+            if (img_id, bb[4]) not in target:
+                target[(img_id, classes[int(bb[4])])] = []
+            target[(img_id, classes[int(bb[4])])].append(bb[:4])
+
+        boxes, tags, scores = predict(img_tensor, model)
+        h, w, _ = img.shape
+        if len(boxes) > 0:
+            boxes = np.array([
+                boxes[:, 0] * w,
+                boxes[:, 1] * h,
+                boxes[:, 2] * w,
+                boxes[:, 3] * h,
+            ]).T
+        tags = [t[0] for t in tags]
+        ps = list(zip(scores, tags, boxes))
+        for score, tag, box in ps:
+            preds[classes[int(tag)]].append([img_id, score, *box])
+
+    print(preds)
+    print(target)
+
+    aps = []
+    for i,class_ in enumerate(classes):
+        pred = preds[class_] #[[image_id,confidence,x1,y1,x2,y2],...]
+        if len(pred) == 0: #如果这个类别一个都没有检测到的异常情况
+            ap = 0
+            print('---class {} ap {}---'.format(class_,ap))
+            aps += [ap]
+            continue
+        #print(pred)
+        image_ids = [x[0] for x in pred]
+        confidence = np.array([float(x[1]) for x in pred])
+        BB = np.array([x[2:] for x in pred])
+        # sort by confidence
+        sorted_ind = np.argsort(-confidence)
+        sorted_scores = np.sort(-confidence)
+        BB = BB[sorted_ind, :]
+        image_ids = [image_ids[x] for x in sorted_ind]
+
+        # go down dets and mark TPs and FPs
+        npos = 0.
+        for (key1,key2) in target:
+            if key2 == class_:
+                npos += len(target[(key1,key2)]) #统计这个类别的正样本，在这里统计才不会遗漏
+        nd = len(image_ids)
+        tp = np.zeros(nd)
+        fp = np.zeros(nd)
+        for d,image_id in enumerate(image_ids):
+            bb = BB[d] #预测框
+            if (image_id,class_) in target:
+                BBGT = target[(image_id,class_)] #[[],]
+                for bbgt in BBGT:
+                    # compute overlaps
+                    # intersection
+                    ixmin = np.maximum(bbgt[0], bb[0])
+                    iymin = np.maximum(bbgt[1], bb[1])
+                    ixmax = np.minimum(bbgt[2], bb[2])
+                    iymax = np.minimum(bbgt[3], bb[3])
+                    iw = np.maximum(ixmax - ixmin + 1., 0.)
+                    ih = np.maximum(iymax - iymin + 1., 0.)
+                    inters = iw * ih
+
+                    union = (bb[2]-bb[0]+1.)*(bb[3]-bb[1]+1.) + (bbgt[2]-bbgt[0]+1.)*(bbgt[3]-bbgt[1]+1.) - inters
+                    if union == 0:
+                        print(bb,bbgt)
+
+                    overlaps = inters/union
+                    if overlaps >= threshold:
+                        tp[d] = 1
+                        BBGT.remove(bbgt) #这个框已经匹配到了，不能再匹配
+                        if len(BBGT) == 0:
+                            del target[(image_id,class_)] #删除没有box的键值
+                        break
+                fp[d] = 1-tp[d]
+            else:
+                fp[d] = 1
+        fp = np.cumsum(fp)
+        tp = np.cumsum(tp)
+        rec = tp/float(npos)
+        prec = tp/np.maximum(tp + fp, np.finfo(np.float64).eps)
+        #print(rec,prec)
+        ap = voc_ap(rec, prec, use_07_metric)
+        print('---class {} ap {}---'.format(class_,ap))
+        aps += [ap]
+    mean_ap = np.mean(aps)
+    print('---map {}---'.format(mean_ap))
+    return mean_ap
+######################################################################################
 
 
 if __name__ == '__main__':

@@ -126,9 +126,12 @@ class Yolov1(nn.Module):
             print('*** auxiliary part saved successfully at {}!'.format(
                 osp.join(self.model_save_dir, save_name + '.pt')))
 
-    def load_model(self, optimizer=None, lr_scheduler=None):
+    def load_model(self, optimizer=None, lr_scheduler=None, step=None):
         try:
-            saved_model = torch.load(osp.join(self.model_save_dir, self.model_save_name + '.pt'),
+            model_name = self.model_save_name
+            if step is not None:
+                model_name += f"_{step}"
+            saved_model = torch.load(osp.join(self.model_save_dir, model_name + '.pt'),
                                      map_location='cpu')
             self.load_state_dict(saved_model)
             print('*** loading model weight successfully!')

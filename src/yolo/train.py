@@ -37,9 +37,9 @@ def config_parser():
                         help='Directory for logging training')
     parser.add_argument('--name', default='',
                         help='Extra directory name for any variations')
-    parser.add_argument('--save_step', default=1000, type=int,
+    parser.add_argument('--save_step', default=500, type=int,
                         help='Directory for saving checkpoint models')
-    parser.add_argument('--save_snap', default=2000, type=int,
+    parser.add_argument('--save_snap', default=1000, type=int,
                         help='Directory for saving checkpoint models')
     # 恢复训练
     parser.add_argument('--backbone', default='yolo', choices=['yolo', 'resnet18', 'resnet50', 'vgg11', 'vgg16'],
@@ -51,11 +51,11 @@ def config_parser():
                         help='Momentum value for optim')
     parser.add_argument('--weight_decay', default=5e-4, type=float,
                         help='Weight decay for SGD')
-    parser.add_argument('--epochs', default=135, type=int,
+    parser.add_argument('--epochs', default=70, type=int,
                         help='Number of epochs to train model on')
     parser.add_argument('--gamma', default=0.1, type=float,
                         help='Gamma update for SGD')
-    parser.add_argument('--lr_mult_epochs', default=[75, 105], nargs='+',
+    parser.add_argument('--lr_mult_epochs', default=[40, 55], nargs='+',
                         help='Epochs to apply gamma to SGD LR')
     parser.add_argument('--warm_up_factor', default=0.1, type=float,
                         help='Warmup factor on LR for scheduler')
@@ -193,4 +193,5 @@ def train(args):
 
 if __name__ == '__main__':
     args = config_parser()
+    print(args)
     train(args)
