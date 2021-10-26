@@ -45,14 +45,19 @@ I observed the following:
 
 These trends are also reflected in the losses and mAPs:
 * VOC2007
+
 | ![voc2007_tloss](src/yolo/imgs/voc2007_train_loss.jpg) | ![voc2007_vloss](src/yolo/imgs/voc2007_valid_loss.jpg) |
 | - | - |
 | ![voc2007_tmap](src/yolo/imgs/voc2007_train_map.jpg) | ![voc2007_vmap](src/yolo/imgs/voc2007_valid_map.jpg) |
+
 * voc2008
+
 | ![voc2008_tloss](src/yolo/imgs/voc2008_train_loss.jpg) | ![voc2008_vloss](src/yolo/imgs/voc2008_valid_loss.jpg) |
 | - | - |
 | ![voc2008_tmap](src/yolo/imgs/voc2008_train_map.jpg) | ![voc2008_vmap](src/yolo/imgs/voc2008_valid_map.jpg) |
+
 * voc2012
+
 | ![voc2012_tloss](src/yolo/imgs/voc2012_train_loss.jpg) | ![voc2012_vloss](src/yolo/imgs/voc2012_valid_loss.jpg) |
 | - | - |
 | ![voc2012_tmap](src/yolo/imgs/voc2012_train_map.jpg) | ![voc2012_vmap](src/yolo/imgs/voc2012_valid_map.jpg) |
