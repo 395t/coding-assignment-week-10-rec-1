@@ -93,3 +93,5 @@ The final results on VOC2007 look like:
 | VGG16 | ResNet50 | Ground Truth |
 | - | - | - |
 | ![valid_vgg_final](src/yolo/imgs/valid_vgg_final.jpg) | ![valid_resnet_final](src/yolo/imgs/valid_resnet_final.jpg) | ![valid_gt_final](src/yolo/imgs/valid_gt.jpg) |
+
+Generally, the models were able to find bounding boxes for some of the biggest objects. The last few epochs (with smaller learning rates) seemed to align the boxes better. The smaller objects are often not detected or filtered by the confidence threshold.
