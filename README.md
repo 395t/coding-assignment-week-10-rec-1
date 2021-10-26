@@ -1,3 +1,55 @@
+## 2D image recognition using fasterRCNN architecture
+
+## Training
+
+For all the VOC experiments, the fasterRCNN used a vgg16 as the fastRCNN model. For the COCO experiment, the vgg16 model made the training unstable and the losses diverged to NaN's, low learning rates of (0.00001) were stable but not practical for learning. 
+![vgg nan](./figures/vgg16_nan.png)
+
+Resnet101 was found to do better and was stable during the training process. Due to memory limitations on my desktop, the batch size for all datasets is 1, i.e. BATCH_SIZE=1
+
+Resnet101 was used for the COCO experiments alone. Training on COCO 2014 was really slow (~11 hrs) per epoch (160k iterations) on my machine. So the training was truncated at 100k iterations.
+
+The region proposal network (RPN) is a CNN that is also trained to learn the proper region proposals. The 4 step alternating training strategy is used to train the model here. A stochastic gradient descent (SGD) with learning rate (lr) of 0.001 was used for all results shown here.
+
+![voc2007 train](./figures/2007_train.png)
+
+![voc2012 train](./figures/2012_train.png)
+
+![coco2014 train](./figures/coco2014_total_loss.png)
+
+![voc2014 train2](./figures/coco2014_rpn_loss.png)
+
+## Testing
+
+The test dataset for VOC 2007 was readily available and the mAP could be calculated over the given set. However for the VOC 2008 and 2012 datasets, the test dataset was missing annotations to seveal test images. To resolve this we sampled 1000 random samples from the validaton set and used as testing for VOC 2008 and VOC 2012.
+
+![voc2007 train](./figures/2007_test.png)
+
+![voc2012 train](./figures/2012_test.png)
+
+For COCO 2014, the 5000 test images were used. Since each epoch has 164k iterations, doing only 100k iterations doesn't provide a great mAP score, hence it is not reported here.
+
+
+Demonstration of how the network learning evolves
+
+![epoch1](./figures/output_1.png)
+![epoch1](./figures/output_2.png)
+![epoch1](./figures/output_3.png)
+![epoch1](./figures/output_4.png)
+![epoch1](./figures/output_fin.png)
+
+
+## Summary
+
+The network was successfully trained on VOC 2007 and 2012 datasets. Due to hardware constraints, the COCO dataset training couldn't be completed, but given enough time the plot trends showed convergence and that the model was learning. Pre-training greatly reduces the training time in all cases. 
+
+
+
+
+
+
+
+
 # RetinaNet - Focal Loss for Dense Object Detection
 
 Coder: Elias Lampietti, ejl2425
