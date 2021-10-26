@@ -18,3 +18,26 @@ I used and worked from 3 open-source PyTorch implementation of YOLO:
 * Matplotlib 3.3.4
 * torchinfo 1.5.3
 * tqdm 4.62.3
+* opencv2
+
+## Commands
+For training:
+```
+python3 -m train \
+    --name voc2007_resnet50 \
+    --backbone resnet50 \
+    --dataset voc2007 \
+    --batch_size 16 \
+    --warm_up_epochs 3
+```
+This corresponds to using a ResNet50 as the backbone CNN for YOLO. We will train on the Pascal VOC2007 dataset with batch sizes of 16. The model will linearly increase the learning rate by a factor of 10 for 3 epochs.
+
+For testing:
+```
+python3 -m test \
+    --set test \
+    --year 2007 \
+    --backbone resnet50 \
+    --step 10990
+```
+This corresponds to using the trained ResNet50 backbone YOLO for inference. We will do inference on the Pascal VOC2007 test set after the model has been trained for 10990 steps.
