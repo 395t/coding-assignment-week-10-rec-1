@@ -88,7 +88,9 @@ In the paper, the authors pre-trained the first 20 convolutional layers of YOLOv
 * Pre-trained ResNet18
 * Pre-trained ResNet50
 
-These pre-trained models are chosen based on the number of layers they had and that they all achieved higher than 88% accuracy on the Image Recognition task on ImageNet. I also tested the original un-trained layers to see if the pre-training impacted performance.
+The pre-trained models are trained on the ImageNet Classification task. These models are chosen based on the number of layers they had, and that they all achieved higher than 88% accuracy on the Image Recognition task on ImageNet. I also tested the original un-trained layers to see if the pre-training impacted performance.
+
+More information about these pre-trained models can be found on the [torchvision documentation](https://pytorch.org/vision/stable/models.html).
 
 ### Hyperparameters
 Every model is supposed to be trained for 70 epochs using SGD with learning rate of 0.001. The learning rate drops to 0.0001 at 40 epochs and to 0.00001 at 55 epochs. A linear learning rate warm up scheduler is applied so that the learning rate increases linearly from 0.0001 to 0.001 in the first few epochs.
