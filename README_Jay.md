@@ -24,19 +24,19 @@ The mAP reported by my models are found to be half as much as the mAP reported i
 
 ### Results
 
-I trained the models on the VOC2007 and VOC2008 datasets for at least 60 epochs. Since the VOC2012 dataset is much larger than both, I managed to train the models on it for at least 40 epochs.
+I trained the models on the VOC2007 for 70 epochs. Since the VOC2012 dataset is much larger than both, I managed to train the models on it for at least 40 epochs. The models on the VOC2008 dataset are trained for at least 40 epochs as well.
 
 Here's a summary of the results:
 
 | Backbone | Parameters | VOC2007 Test mAP | VOC2008 Test mAP | VOC2012 Test mAP |
 |----------|------------|------------------|------------------|------------------|
-| YOLOv1 | ~271.7M | 0.84 | | 0.0 |
-| VGG11 | ~225.5M | 20.32 | | 19.57 |
-| VGG16 | ~231.0M | 22.31 | | 21.30 |
-| ResNet18 | ~227.4M | 26.28 | | 28.62 |
-| ResNet50 | ~253.9M | **29.72** | | **29.10** |
+| YOLOv1 | ~271.7M | 0.84 | N/A | 0.0 |
+| VGG11 | ~225.5M | 20.32 | 14.16 | 19.57 |
+| VGG16 | ~231.0M | 22.31 | 14.83 | 21.30 |
+| ResNet18 | ~227.4M | 26.28 | N/A | 28.62 |
+| ResNet50 | ~253.9M | **29.72** | **16.37** | **29.10** |
 
-Summaries of the models showed that the first linear layer in the classifier which converted the backbone features to 4096 latent features used the most amount of parameters, ~205.5M.
+Summaries of the models showed that the first linear layer in the classifier which converted the backbone features to 4096 latent features used the most amount of parameters, ~205.5M. Note, "N/A" indicates that the model did not converge and started to output NaNs.
 
 I observed the following:
 * Although the un-trained layers managed to train, they overfit heavily to the train set and do not converge on the validation set.
@@ -50,16 +50,46 @@ These trends are also reflected in the losses and mAPs:
 | - | - |
 | ![voc2007_tmap](src/yolo/imgs/voc2007_train_map.jpg) | ![voc2007_vmap](src/yolo/imgs/voc2007_valid_map.jpg) |
 
-* voc2008
+* VOC2008
 
 | ![voc2008_tloss](src/yolo/imgs/voc2008_train_loss.jpg) | ![voc2008_vloss](src/yolo/imgs/voc2008_valid_loss.jpg) |
 | - | - |
 | ![voc2008_tmap](src/yolo/imgs/voc2008_train_map.jpg) | ![voc2008_vmap](src/yolo/imgs/voc2008_valid_map.jpg) |
 
-* voc2012
+* VOC2012
 
 | ![voc2012_tloss](src/yolo/imgs/voc2012_train_loss.jpg) | ![voc2012_vloss](src/yolo/imgs/voc2012_valid_loss.jpg) |
 | - | - |
 | ![voc2012_tmap](src/yolo/imgs/voc2012_train_map.jpg) | ![voc2012_vmap](src/yolo/imgs/voc2012_valid_map.jpg) |
 
+For a lot of the time, the YOLOv1 backbone crashed and started outputting NaNs. I also found this to happen to ResNet18 in VOC2012. Future work may wish to fine-tune the learning rate warp up and learning rate hyperparameters better to avoid these problems.
+
 ### Visualizations
+
+Here're visualizations of how the bounding box of the model with different backbones changed during training on VOC2007:
+
+* Training Example
+
+| VGG16 | ResNet50 |
+| - | - |
+| ![train_vgg](src/yolo/imgs/vgg_train.gif) | ![train_resnet](src/yolo/imgs/resnet_train.gif) |
+
+* Validation Example
+
+| VGG16 | ResNet50 |
+| - | - |
+| ![valid_vgg](src/yolo/imgs/vgg_valid.gif) | ![valid_resnet](src/yolo/imgs/resnet_valid.gif) |
+
+The final results on VOC2007 look like:
+
+* Training Example
+
+| VGG16 | ResNet50 | Ground Truth |
+| - | - | - |
+| ![train_vgg_final](src/yolo/imgs/train_vgg_final.jpg) | ![train_resnet_final](src/yolo/imgs/train_resnet_final.jpg) | ![train_gt_final](src/yolo/imgs/train_gt.jpg) |
+
+* Validation Example
+
+| VGG16 | ResNet50 | Ground Truth |
+| - | - | - |
+| ![valid_vgg_final](src/yolo/imgs/valid_vgg_final.jpg) | ![valid_resnet_final](src/yolo/imgs/valid_resnet_final.jpg) | ![valid_gt_final](src/yolo/imgs/valid_gt.jpg) |

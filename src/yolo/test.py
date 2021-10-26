@@ -42,7 +42,7 @@ def voc_eval(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Single Shot MultiBox Detector Training With Pytorch Evaluation')
-    parser.add_argument('--set', default='test', choices=['test', 'train', 'valid'], help='dataset to evaluate on')
+    parser.add_argument('--set', default='test', choices=['test', 'train', 'val'], help='dataset to evaluate on')
     parser.add_argument('--year', default=2007, type=int, help='dataset year')
     parser.add_argument('--backbone', default='yolo', choices=['yolo', 'resnet18', 'resnet50', 'vgg11', 'vgg16'])
     parser.add_argument('--step', default=None)
