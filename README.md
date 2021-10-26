@@ -1,3 +1,20 @@
+## Dataset 
+The following image classification datasets were used:
+-PASCAL VOC 2007 
+-PASCAL VOC 2008 
+-PASCAL VOC 2012
+-COCO 2014
+
+Here are some example annotated images from the training dataset:
+
+![training data](https://user-images.githubusercontent.com/7085644/138916591-9f9ac18b-caa0-44b4-9c03-ff5cffdaa76a.PNG)
+
+It should be noted here that PASCAL VOC 2008 contains ~700 images from the 2007 dataset. Similarly, the VOC 2012 dataset contains training examples from the VOC 2007-2011 datsets. Since the goal is 2D recognition, the segmentation task is not studied here.
+
+## Hardware
+All experiments on the VOC dataset were performed on Colab, the UT CS cluster and a lab desktop with Intel I9-10900KF and NVIDIA RTX 3080 GPU.
+
+
 ## 2D image recognition using fasterRCNN architecture
 
 ## Training
@@ -44,12 +61,6 @@ Demonstration of how the network learning evolves
 The network was successfully trained on VOC 2007 and 2012 datasets. Due to hardware constraints, the COCO dataset training couldn't be completed, but given enough time the plot trends showed convergence and that the model was learning. Pre-training greatly reduces the training time in all cases. 
 
 
-
-
-
-
-
-
 # RetinaNet - Focal Loss for Dense Object Detection
 
 Coder: Elias Lampietti, ejl2425
@@ -92,10 +103,6 @@ Since the Detectron2 models take input data in the COCO json format, we used [ro
 We started with the pre-trained RetinaNet model from Detectron2 and then customized it by training and fine-tuning this model for the VOC 2007, 2008, and 2012 datasets.
 
 ## Results
-
-Here are some example annotated images from the training dataset:
-
-![training data](https://user-images.githubusercontent.com/7085644/138916591-9f9ac18b-caa0-44b4-9c03-ff5cffdaa76a.PNG)
 
 The total loss during training for each dataset is shown below:
 
