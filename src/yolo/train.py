@@ -24,7 +24,7 @@ def config_parser():
     # 训练集与基础网络设定
     parser.add_argument('--voc_data_set_root', default='data/train/VOCdevkit',
                         help='data_set root directory path')
-    parser.add_argument('--dataset', default='voc2007', choices=['voc2007', 'voc2012', 'coco2014'],
+    parser.add_argument('--dataset', default='voc2007', choices=['voc2007', 'voc2012', 'voc2008'],
                         help='dataset to use in training')
     parser.add_argument('--batch_size', default=16, type=int,
                         help='Batch size for training')
@@ -39,7 +39,7 @@ def config_parser():
                         help='Extra directory name for any variations')
     parser.add_argument('--save_step', default=500, type=int,
                         help='Directory for saving checkpoint models')
-    parser.add_argument('--save_snap', default=1000, type=int,
+    parser.add_argument('--save_snap', default=5000, type=int,
                         help='Directory for saving checkpoint models')
     # 恢复训练
     parser.add_argument('--backbone', default='yolo', choices=['yolo', 'resnet18', 'resnet50', 'vgg11', 'vgg16'],
@@ -72,6 +72,18 @@ def train(args):
     if args.dataset == 'voc2007':
         train_set = [('2007', 'train')]
         val_set = [('2007', 'val')]
+        train_transform = Yolov1Augmentation(dataset=args.dataset, size=448, percent_coord=True)
+        valid_transform = Yolov1TestAugmentation(dataset=args.dataset, size=448, percent_coord=True)
+        classes = VOC_CLASSES
+    elif args.dataset == 'voc2008':
+        train_set = [('2008', 'train')]
+        val_set = [('2008', 'val')]
+        train_transform = Yolov1Augmentation(dataset=args.dataset, size=448, percent_coord=True)
+        valid_transform = Yolov1TestAugmentation(dataset=args.dataset, size=448, percent_coord=True)
+        classes = VOC_CLASSES
+    elif args.dataset == 'voc2012':
+        train_set = [('2012', 'train')]
+        val_set = [('2012', 'val')]
         train_transform = Yolov1Augmentation(dataset=args.dataset, size=448, percent_coord=True)
         valid_transform = Yolov1TestAugmentation(dataset=args.dataset, size=448, percent_coord=True)
         classes = VOC_CLASSES

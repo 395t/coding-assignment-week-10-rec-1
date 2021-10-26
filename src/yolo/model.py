@@ -10,6 +10,7 @@ from typing import Tuple, List, Optional, Union
 from torch import nn
 from torchvision import models as Models
 from os import path as osp
+from math import sqrt
 import os
 from config import *
 
@@ -23,6 +24,21 @@ class CNNBlock(nn.Module):
         self.conv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
         self.bn = nn.BatchNorm2d(out_channels)
         self.l_relu = nn.LeakyReLU(0.1)
+        self._initialize_weights()
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, sqrt(2. / n))
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                m.weight.data.normal_(0, 0.01)
+                m.bias.data.zero_()
 
     def forward(self, x):
         return self.l_relu(self.bn(self.conv(x)))
@@ -92,6 +108,21 @@ class Yolov1(nn.Module):
             nn.Dropout(p=0.5),
             nn.Linear(4096, int(self.grid_num * self.grid_num * 30)),
         )
+        self._initialize_weights()
+
+    def _initialize_weights(self):
+        for m in self.cls.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, sqrt(2. / n))
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                m.weight.data.normal_(0, 0.01)
+                m.bias.data.zero_()
 
     def forward(self, x):
         x = self.backbone(x)
@@ -100,7 +131,7 @@ class Yolov1(nn.Module):
         x = x.view(-1, self.grid_num, self.grid_num, 30)
         #x_p, x_c = torch.split(x, [10, 20], dim=-1)
         #x_p = torch.sigmoid(x_p)
-        #x_c = F.softmax(x_c)
+        #x_c = F.softmax(x_c, dim=-1)
         #x = torch.cat([x_p, x_c], dim=-1)
         x = torch.sigmoid(x)
         return x

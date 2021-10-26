@@ -91,7 +91,7 @@ class VOCAnnotationTransform(object):
             # 得到一组0~1.0范围的值
             for i, pt in enumerate(pts):
                 # bbox 数值为像素点的位置，从1开始取所以要减去1？
-                cur_pt = int(bbox.find(pt).text) - 1
+                cur_pt = float(bbox.find(pt).text) - 1
                 # scale height or width
                 cur_pt = cur_pt / width if i % 2 == 0 else cur_pt / height
                 bndbox.append(cur_pt)

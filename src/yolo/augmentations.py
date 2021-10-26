@@ -11,6 +11,8 @@ TEST_MODE = False
 
 voc2007_normalize = transforms.Normalize((0.39092347, 0.42301013, 0.4474045),
                                          (0.28450244, 0.27197774, 0.27521163))
+voc2008_normalize = transforms.Normalize((0.41136971, 0.43884238, 0.45717297),
+                                         (0.2845908 , 0.27161781, 0.27501099))
 voc2012_normalize = transforms.Normalize((0.40530911, 0.43773604, 0.45677271),
                                          (0.28526465, 0.27186762, 0.27457791))
 
@@ -159,8 +161,12 @@ class Normalize(object):
     def __init__(self, dataset):
         if dataset == "voc2007":
             self.normalize = voc2007_normalize
+        elif dataset == 'voc2008':
+            self.normalize = voc2008_normalize
         elif dataset == "voc2012":
             self.normalize = voc2012_normalize
+        else:
+            raise NotImplementedError("Didn't implement normalization for other datasets yet")
 
     def __call__(self, image, boxes=None, labels=None):
         return self.normalize(image), boxes, labels
