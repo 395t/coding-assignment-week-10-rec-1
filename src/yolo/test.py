@@ -17,7 +17,7 @@ def voc_eval(args):
         'test': 'test'
     }
     valid_transform = Yolov1TestAugmentation(dataset=f'voc{args.year}', size=448, percent_coord=True)
-    dataset = VOCDetection(root=f'data/{set_dir[args.set]}/VOCdevkit',
+    dataset = VOCDetection(root=f'data/{set_dir[args.set] if args.year != 2012 else "train"}/VOCdevkit',
                            image_sets=[(f'{args.year}', args.set)],
                            transform=valid_transform,
                            dataset_name=f'voc{args.year}')
