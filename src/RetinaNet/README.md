@@ -6,6 +6,8 @@ Implementation of Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piot
 
 This code was adapted from the RetinaNet model implemented in the Facebook AI Research library [Detectron2](https://github.com/facebookresearch/detectron2)
 
+Notebooks that walk through this training/fine-tuning/evaluation process for the VOC 2007,2008,2012 datasets can be found [here](https://github.com/395t/coding-assignment-week-10-rec-1/tree/main/notebooks/RetinaNet)
+
 ## RetinaNet Model
 
 The RetinaNet is a one-stage model used for object detection.
