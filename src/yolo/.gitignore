@@ -1,0 +1,9 @@
+data/
+**__pycache__/
+models/
+logs/
+run.sh
+set*.sh
+old/
+*.out
+*.err
