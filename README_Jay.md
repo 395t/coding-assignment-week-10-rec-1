@@ -45,10 +45,9 @@ I observed the following:
 
 These trends are also reflected in the losses and mAPs:
 
-| VOC2007 | |
+For VOC2007:
+| ![voc2007_tloss](src/yolo/voc2007_train_loss.jpg) | ![voc2007_vloss](src/yolo/voc2007_valid_loss.jpg) |
 | - | - |
-| ![voc2007_tloss](voc2007_train_loss.jpg) | ![voc2007_vloss](voc2007_valid_loss.jpg) |
-| - | - |
-| ![voc2007_tmap](voc2007_train_map.jpg) | ![voc2007_vmap](voc2007_valid_map.jpg) |
+| ![voc2007_tmap](src/yolo/voc2007_train_map.jpg) | ![voc2007_vmap](src/yolo/voc2007_valid_map.jpg) |
 
 ### Visualizations
