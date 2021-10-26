@@ -139,11 +139,11 @@ These trends are also reflected in the losses and mAPs:
 | - | - |
 | ![voc2012_tmap](src/yolo/imgs/voc2012_train_map.jpg) | ![voc2012_vmap](src/yolo/imgs/voc2012_valid_map.jpg) |
 
-For a lot of the time, the YOLOv1 backbone crashed and started outputting NaNs. I also found this to happen to ResNet18 in VOC2012. Future work may wish to fine-tune the learning rate warp up and learning rate hyperparameters better to avoid these problems.
+For a lot of the time, the YOLOv1 backbone crashed and started outputting NaNs. I also found this to happen to ResNet18 in VOC2012. Future work may wish to fine-tune the learning rate warm up and learning rate hyperparameters better to avoid these problems.
 
 ### Visualizations
 
-Here're visualizations of how the bounding box of the model with different backbones changed during training on VOC2007:
+Here're visualizations of how the bounding box outputs of the models with different backbones changed during training on VOC2007:
 
 * Training Example
 
