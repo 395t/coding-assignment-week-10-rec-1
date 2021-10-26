@@ -8,7 +8,7 @@ Our group covered the following object detection models and papers:
 * Mask R-CNN: [Mask R-CNN](https://arxiv.org/abs/1703.06870), He, Gkioxari, Dollár, Girshick; 2017
 
 ## Dataset 
-The following image classification datasets were used:
+The following 2D Recognition datasets were used:
 * PASCAL VOC 2007 
 * PASCAL VOC 2008 
 * PASCAL VOC 2012
@@ -76,7 +76,7 @@ The network was successfully trained on VOC 2007, 2008 and 2012 datasets. Due to
 ----
 ## You Only Look Once (V1)
 
-Coder: Jay Liao (jl64465)
+Coder: Jay Liao, jl64465
 
 This work covers the model used in [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640). The code and training and testing commands can be found in `src/yolo`.
 
