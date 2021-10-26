@@ -17,7 +17,7 @@ def voc_eval(args):
         'test': 'test'
     }
     valid_transform = Yolov1TestAugmentation(dataset=f'voc{args.year}', size=448, percent_coord=True)
-    dataset = VOCDetection(root=f'data/{set_dir[args.set]}/VOCdevkit',
+    dataset = VOCDetection(root=f'data/{set_dir[args.set] if args.year != 2012 else "train"}/VOCdevkit',
                            image_sets=[(f'{args.year}', args.set)],
                            transform=valid_transform,
                            dataset_name=f'voc{args.year}')
@@ -42,7 +42,7 @@ def voc_eval(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Single Shot MultiBox Detector Training With Pytorch Evaluation')
-    parser.add_argument('--set', default='test', choices=['test', 'train', 'valid'], help='dataset to evaluate on')
+    parser.add_argument('--set', default='test', choices=['test', 'train', 'val'], help='dataset to evaluate on')
     parser.add_argument('--year', default=2007, type=int, help='dataset year')
     parser.add_argument('--backbone', default='yolo', choices=['yolo', 'resnet18', 'resnet50', 'vgg11', 'vgg16'])
     parser.add_argument('--step', default=None)
