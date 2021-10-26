@@ -1,17 +1,24 @@
 # 2D Recognition - Week 10 Group 1
 
+Our group covered the following object detection models and papers:
+
+* Faster R-CNN: [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/abs/1506.01497), Ren, He, Girshick, Sun; 2015
+* YOLOv1: [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640), Redmon, Divvala, Girshick, Farhadi; 2015
+* RetinaNet: [Focal Loss for Dense Object Detection](https://arxiv.org/abs/1708.02002), Lin, Goyal, Girshick, He, Dollár; 2017
+* Mask R-CNN: [Mask R-CNN](https://arxiv.org/abs/1703.06870), He, Gkioxari, Dollár, Girshick; 2017
+
 ## Dataset 
 The following image classification datasets were used:
--PASCAL VOC 2007 
--PASCAL VOC 2008 
--PASCAL VOC 2012
--COCO 2014
+* PASCAL VOC 2007 
+* PASCAL VOC 2008 
+* PASCAL VOC 2012
+* COCO 2014
 
 Here are some example annotated images from the training dataset:
 
 ![training data](https://user-images.githubusercontent.com/7085644/138916591-9f9ac18b-caa0-44b4-9c03-ff5cffdaa76a.PNG)
 
-It should be noted here that PASCAL VOC 2008 contains ~700 images from the 2007 dataset. Similarly, the VOC 2012 dataset contains training examples from the VOC 2007-2011 datsets. Since the goal is 2D recognition, the segmentation task is not studied here.
+It should be noted here that PASCAL VOC 2008 contains ~700 images from the 2007 dataset. Similarly, the VOC 2012 dataset contains training examples from the VOC 2007-2011 datsets. Since the goal is 2D recognition, the segmentation task is not studied here. We evaluated all models on object detection using mean AP as the metric. Refer to the official [Pascal VOC Challenge documentation](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/devkit_doc.pdf) for how this mean AP is calculated.
 
 ### Hardware
 All experiments on the VOC dataset were performed on Colab, the UT CS cluster and a lab desktop with Intel I9-10900KF and NVIDIA RTX 3080 GPU.
@@ -283,5 +290,11 @@ These results show that RetinaNet is able to classify vehicles better than anima
 ----
 ## References
 
-[Detectron2: Yuxin Wu, Alexander Kirillov, Francisco Massa, Wan-Yen Lo, and Ross Girshick, 2019](https://github.com/facebookresearch/detectron2)
-[Roboflow data loading and training tutorial: Jacob Solawetz, 2020](https://blog.roboflow.com/how-to-train-detectron2/)
+YOLOv1 used the following open-source repositories:
+* [pytorch-yolo-v1](https://github.com/zzzheng/pytorch-yolo-v1)
+* [YOLOv1-Pytorch](https://github.com/GitHberChen/YOLOv1-Pytorch)
+* [pytorch-YOLO-v1](https://github.com/abeardear/pytorch-YOLO-v1)
+
+RetinaNet:
+* [Detectron2: Yuxin Wu, Alexander Kirillov, Francisco Massa, Wan-Yen Lo, and Ross Girshick, 2019](https://github.com/facebookresearch/detectron2)
+* [Roboflow data loading and training tutorial: Jacob Solawetz, 2020](https://blog.roboflow.com/how-to-train-detectron2/)
