@@ -33,7 +33,11 @@ Since the Detectron2 models take input data in the COCO json format, we used [ro
 #### 2012 train/validation/test: 
 !curl -L "https://app.roboflow.com/ds/C6enLy92Ft?key=Mzi73TKWJ3" > roboflow.zip; unzip roboflow.zip; rm roboflow.zip
 
+## Training
 
+## Results
 
 ## References
 
+[Detectron2: Yuxin Wu, Alexander Kirillov, Francisco Massa, Wan-Yen Lo, and Ross Girshick, 2019](https://github.com/facebookresearch/detectron2)
+[Roboflow data loading and training tutorial: Jacob Solawetz, 2020](https://blog.roboflow.com/how-to-train-detectron2/)
