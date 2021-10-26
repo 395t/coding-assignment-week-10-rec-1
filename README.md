@@ -36,6 +36,10 @@ The region proposal network (RPN) is a CNN that is also trained to learn the pro
 
 ![voc2014 train2](./figures/coco2014_rpn_loss.png)
 
+![voc2007 train](./figures/2008_train_total.png)
+
+![voc2012 train](./figures/2008_train.png)
+
 ## Testing
 
 The test dataset for VOC 2007 was readily available and the mAP could be calculated over the given set. However for the VOC 2008 and 2012 datasets, the test dataset was missing annotations to seveal test images. To resolve this we sampled 1000 random samples from the validaton set and used as testing for VOC 2008 and VOC 2012.
@@ -58,7 +62,7 @@ Demonstration of how the network learning evolves
 
 ## Summary
 
-The network was successfully trained on VOC 2007 and 2012 datasets. Due to hardware constraints, the COCO dataset training couldn't be completed, but given enough time the plot trends showed convergence and that the model was learning. Pre-training greatly reduces the training time in all cases. 
+The network was successfully trained on VOC 2007, 2008 and 2012 datasets. Due to hardware constraints, the COCO dataset training couldn't be completed, but given enough time the plot trends showed convergence and that the model was learning. Pre-training greatly reduces the training time in all cases. 
 
 
 # RetinaNet - Focal Loss for Dense Object Detection
